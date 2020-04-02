@@ -88,6 +88,21 @@ class DownloadStation:
 
         return self.request_data(api_name, api_path, req_param)
 
+    def task_create(self, uri, unzip_password=None, destination=None):
+        api_name = 'SYNO.DownloadStation.Task'
+        info = self.download_list[api_name]
+        api_path = info['path']
+        req_param = {'version': info['maxVersion'], 'method': 'create', 'uri': uri}
+
+        if isinstance(uri, list):
+            req_param['uri'] = ",".join(uri)
+        if unzip_password is not None:
+            req_param['unzip_password'] = unzip_password
+        if destination is not None:
+            req_param['destination'] = destination
+
+        return self.request_data(api_name, api_path, req_param)
+
     def tasks_info(self, task_id, additional_param=None):
         api_name = 'SYNO.DownloadStation.Task'
         info = self.download_list[api_name]
@@ -274,4 +289,3 @@ class DownloadStation:
         param = {'version': info['maxVersion'], 'method': 'getModule'}
 
         return self.request_data(api_name, api_path, param)
-
