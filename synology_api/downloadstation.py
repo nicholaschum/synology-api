@@ -88,20 +88,45 @@ class DownloadStation:
 
         return self.request_data(api_name, api_path, req_param)
 
-    def task_create(self, uri, unzip_password=None, destination=None):
+    def task_create(self, uri=None, file=None, username=None, password=None, unzip_password=None, destination=None):
+        """
+        uri             Optional. Accepts HTTP/FTP/magnet/ED2K links or the file path starting with a shared folder, multiple enter as list.
+        file            Optional. File uploading from client. For more info, please see Limitations:
+                            Due to multipart upload limitations, creating tasks by uploading files should adhere to one of the following implementations:
+                                a Set the upload files as the only POST request method data, and set other files as GET parameters.
+                                b Set all the parameters as POST data, and the upload file should implement LAST parameters.
+        username        Optional. Login username (FTP,...)
+        password        Optional. Login password (FTP,...)
+        unzip_password  Optional. Password for unzipping download tasks
+        destination     Optional. Download destination path (!!) starting with a shared folder
+        """
+
         api_name = 'SYNO.DownloadStation.Task'
         info = self.download_list[api_name]
         api_path = info['path']
-        req_param = {'version': info['maxVersion'], 'method': 'create', 'uri': uri}
+        req_param = {'version': info['maxVersion'], 'method': 'create'}
+
+        if (uri is None and file is None):
+            return
+        if (uri is not None and file is not None):
+            return
+        if (uri is not None):
+            req_param['uri'] = uri
+        elif (file is not None):
+            req_param['file'] = file
 
         if isinstance(uri, list):
             req_param['uri'] = ",".join(uri)
         if unzip_password is not None:
             req_param['unzip_password'] = unzip_password
+        if username is not None:
+            req_param['username'] = username
+        if password is not None:
+            req_param['password'] = password
         if destination is not None:
             req_param['destination'] = destination
 
-        return self.request_data(api_name, api_path, req_param)
+        return self.request_data(api_name, api_path, req_param, method="get")
 
     def tasks_info(self, task_id, additional_param=None):
         api_name = 'SYNO.DownloadStation.Task'
