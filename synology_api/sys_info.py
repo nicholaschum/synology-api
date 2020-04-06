@@ -20,6 +20,14 @@ class SysInfo:
 
     def logout(self):
         self.session.logout('Core')
+		
+    def get_info(self):
+        api_name = 'SYNO.DSM.Info'
+        info = self.gen_list[api_name]
+        api_path = info['path']
+        req_param = {'version': info['maxVersion'], 'method': 'getinfo', '_sid': self._sid}
+
+        return self.request_data(api_name, api_path, req_param)
 
     def fileserv_smb(self):
         api_name = 'SYNO.Core.FileServ.SMB'
