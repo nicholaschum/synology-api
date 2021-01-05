@@ -80,7 +80,7 @@ class Synology:
         """
         Factory class method
         """
-        param = {'version': '2', 'method': 'login', 'account': username,
+        param = {'version': '6', 'method': 'login', 'account': username,
                  'passwd': passwd, 'session': cls.app, 'format': 'cookie'}
         cls.url = 'http://{ip}:{p}/webapi'.format(ip=cls.ipaddr, p=cls.port)
         cls.session_expire = True
@@ -95,7 +95,7 @@ class Synology:
         return obj
 
     def logout(self):
-        param = {'version': '2', 'method': 'logout', 'session': self.app}
+        param = {'version': '6', 'method': 'logout', 'session': self.app}
 
         response = requests.get(self.url + self._log_api, param)
         self.session_expire = True
